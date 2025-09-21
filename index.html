@@ -1,58 +1,67 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Simulasi Interaktif PJOK Kelas 6</title>
-  <!-- Tailwind CSS -->
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Simulasi Interaktif PJOK Kelas 6 — Versi 13</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    html, body { height: 100%; }
-    body { font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; }
-    /* Simple keyframes for senam animations */
-    @keyframes rollForward {
-      0% { transform: translateX(0) rotate(0deg); }
-      50% { transform: translateX(140px) rotate(360deg); }
-      100% { transform: translateX(260px) rotate(720deg); }
-    }
-    @keyframes rollBackward {
-      0% { transform: translateX(260px) rotate(0deg); }
-      50% { transform: translateX(120px) rotate(-360deg); }
-      100% { transform: translateX(0) rotate(-720deg); }
-    }
-    @keyframes candle {
-      0% { transform: translateY(0) }
-      30% { transform: translateY(-120px) }
-      60% { transform: translateY(-120px) }
-      100% { transform: translateY(0) }
-    }
-    @keyframes lenting {
-      0% { transform: translateX(0) translateY(0) }
-      50% { transform: translateX(160px) translateY(-80px) }
-      100% { transform: translateX(300px) translateY(0) }
-    }
-    @keyframes tiger {
-      0% { transform: translateX(0) translateY(0) scale(1) }
-      30% { transform: translateX(120px) translateY(-60px) scale(1.05) }
-      60% { transform: translateX(200px) translateY(-10px) scale(1.05) }
-      100% { transform: translateX(300px) translateY(0) scale(1) }
-    }
-    /* Animation utility classes applied dynamically */
-    .anim-roll-forward { animation: rollForward 1.2s ease-in-out forwards; }
-    .anim-roll-backward { animation: rollBackward 1.2s ease-in-out forwards; }
-    .anim-candle { animation: candle 1.2s ease-in-out forwards; }
-    .anim-lenting { animation: lenting 1.1s ease-in-out forwards; }
-    .anim-tiger { animation: tiger 1s ease-out forwards; }
+    html,body{height:100%}
+    body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    .lift:hover{transform:translateY(-2px)}
+    .fade-in{animation:fade .25s ease}
+    @keyframes fade{from{opacity:0}to{opacity:1}}
 
-    /* Smooth card hover */
-    .lift:hover { transform: translateY(-2px); }
-    .no-select { user-select: none; -webkit-user-select: none; }
-    /* Prevent flashing on updates */
-    .fade-in { animation: fadeIn .25s ease; }
-    @keyframes fadeIn { from {opacity: 0} to {opacity:1} }
+    /* Kotak simulator senam (tanpa matras). Tepi bawah = garis pijak */
+    .sim-box{
+      background: radial-gradient(120% 120% at 10% 0%, rgba(34,211,238,.18), rgba(99,102,241,.18));
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.14);
+    }
+    .ground{
+      height: 8px; 
+      background: linear-gradient(90deg, rgba(255,255,255,.35), rgba(255,255,255,.18) 40%, rgba(255,255,255,.35));
+      border-top: 2px solid rgba(255,255,255,.5);
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+    }
+
+    /* Animasi mendatar (posisi Y tetap) untuk senam lantai */
+    @keyframes rollForwardX{
+      0%{ transform: translateX(0) rotate(0deg); }
+      50%{ transform: translateX(110px) rotate(360deg); }
+      100%{ transform: translateX(200px) rotate(720deg); }
+    }
+    @keyframes rollBackwardX{
+      0%{ transform: translateX(200px) rotate(0deg); }
+      50%{ transform: translateX(100px) rotate(-360deg); }
+      100%{ transform: translateX(0) rotate(-720deg); }
+    }
+    @keyframes lentingX{
+      0%{ transform: translateX(0) }
+      40%{ transform: translateX(110px) }
+      100%{ transform: translateX(180px) }
+    }
+    @keyframes tigerX{
+      0%{ transform: translateX(0) scale(1) }
+      35%{ transform: translateX(90px) scale(1.06) }
+      65%{ transform: translateX(160px) scale(1.06) }
+      100%{ transform: translateX(200px) scale(1) }
+    }
+    .do-roll-forward{ animation: rollForwardX 1.05s ease-in-out forwards; }
+    .do-roll-backward{ animation: rollBackwardX 1.05s ease-in-out forwards; }
+    .do-lenting{ animation: lentingX 1s ease-in-out forwards; }
+    .do-tiger{ animation: tigerX 1s ease-out forwards; }
+
+    /* Sikap lilin: tetap tempat, hanya pose */
+    @keyframes candleHold{ 
+      0%{ transform: scaleY(1) }
+      30%{ transform: scaleY(1.5) }
+      70%{ transform: scaleY(1.5) }
+      100%{ transform: scaleY(1) }
+    }
+    .do-candle .leg{ animation: candleHold 1.1s ease-in-out forwards; transform-origin: center bottom; }
+    .do-candle .armL, .do-candle .armR{ opacity:.95 }
   </style>
 </head>
 <body class="min-h-full bg-gradient-to-br from-indigo-700 via-fuchsia-600 to-rose-500 text-white">
@@ -63,16 +72,13 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Simulasi Interaktif PJOK • Kelas 6</h1>
-            <p class="text-white/80 mt-1">Belajar sambil bermain: materi, simulasi senam lantai, simulasi skor bola voli, dan kuis cepat.</p>
+            <p class="text-white/80 mt-1">Simulator senam lantai tanpa matras dan mini-simulator voli dengan net.</p>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <span class="inline-flex items-center gap-2 bg-emerald-400/20 text-emerald-100 px-3 py-1.5 rounded-full text-sm border border-emerald-300/30">
-              <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-              Interaktif
+              <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span> Interaktif
             </span>
-            <span class="inline-flex items-center gap-2 bg-cyan-400/20 text-cyan-100 px-3 py-1.5 rounded-full text-sm border border-cyan-300/30">
-              📱 Responsif
-            </span>
+            <span class="inline-flex items-center gap-2 bg-cyan-400/20 text-cyan-100 px-3 py-1.5 rounded-full text-sm border border-cyan-300/30">📱 Responsif</span>
           </div>
         </div>
       </div>
@@ -81,173 +87,154 @@
     <!-- Tabs -->
     <nav class="mb-6">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <button data-tab="materi" class="tab-btn active rounded-xl lift bg-white text-indigo-700 font-semibold px-4 py-3 shadow-md transition">
-          📚 Materi
-        </button>
-        <button data-tab="senam" class="tab-btn rounded-xl lift bg-white/15 hover:bg-white/20 font-semibold px-4 py-3 shadow-md transition border border-white/10">
-          🤸 Senam Lantai
-        </button>
-        <button data-tab="voli" class="tab-btn rounded-xl lift bg-white/15 hover:bg-white/20 font-semibold px-4 py-3 shadow-md transition border border-white/10">
-          🏐 Bola Voli
-        </button>
-        <button data-tab="kuis" class="tab-btn rounded-xl lift bg-white/15 hover:bg-white/20 font-semibold px-4 py-3 shadow-md transition border border-white/10">
-          📝 Kuis Cepat
-        </button>
+        <button data-tab="materi" class="tab-btn rounded-xl lift bg-white/15 hover:bg-white/20 font-semibold px-4 py-3 shadow-md transition border border-white/10">📚 Materi</button>
+        <button data-tab="senam" class="tab-btn active rounded-xl lift bg-white text-indigo-700 font-semibold px-4 py-3 shadow-md transition">🤸 Senam Lantai</button>
+        <button data-tab="voli" class="tab-btn rounded-xl lift bg-white/15 hover:bg-white/20 font-semibold px-4 py-3 shadow-md transition border border-white/10">🏐 Bola Voli</button>
+        <button data-tab="kuis" class="tab-btn rounded-xl lift bg-white/15 hover:bg-white/20 font-semibold px-4 py-3 shadow-md transition border border-white/10">📝 Kuis Cepat</button>
       </div>
     </nav>
 
-    <!-- Content Panels -->
+    <!-- Panels -->
     <main class="space-y-6">
       <!-- Materi -->
-      <section id="panel-materi" class="panel rounded-2xl bg-white/10 backdrop-blur-md p-6 border border-white/15 shadow-xl">
+      <section id="panel-materi" class="panel hidden rounded-2xl bg-white/10 backdrop-blur-md p-6 border border-white/15 shadow-xl">
         <div class="grid md:grid-cols-2 gap-6">
           <div class="rounded-xl p-5 bg-gradient-to-br from-amber-400/20 to-pink-500/20 border border-white/15">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-10 h-10 rounded-lg bg-amber-300/30 flex items-center justify-center text-2xl">🤸</div>
               <h2 class="text-xl font-bold">Rangkuman Materi: Senam Lantai</h2>
             </div>
-            <p class="text-white/90 leading-relaxed">
-              Senam lantai adalah olahraga senam di atas matras/lantai. Gerakannya melibatkan akrobatik, kelenturan, dan keseimbangan tanpa alat.
-            </p>
+            <p class="text-white/90 leading-relaxed">Senam lantai adalah olahraga senam di atas lantai. Gerakan melibatkan akrobatik, kelenturan, dan keseimbangan tanpa alat.</p>
             <h3 class="mt-4 font-semibold">Macam Gerakan:</h3>
             <ul class="mt-2 space-y-2 text-white/90">
-              <li class="flex gap-2"><span>•</span><span><strong>Guling depan</strong>: Menggulingkan badan ke depan dari posisi jongkok.</span></li>
-              <li class="flex gap-2"><span>•</span><span><strong>Guling belakang</strong>: Menggulingkan badan ke belakang.</span></li>
-              <li class="flex gap-2"><span>•</span><span><strong>Sikap lilin</strong>: Kedua kaki lurus ke atas, tumpuan punggung dan pundak, tangan menyangga pinggang.</span></li>
-              <li class="flex gap-2"><span>•</span><span><strong>Guling lenting</strong>: Melentingkan badan ke depan-atas hingga badan melayang.</span></li>
-              <li class="flex gap-2"><span>•</span><span><strong>Loncat harimau</strong>: Melompat ke depan lalu melakukan guling depan.</span></li>
+              <li>• Guling depan</li>
+              <li>• Guling belakang</li>
+              <li>• Sikap lilin</li>
+              <li>• Guling lenting</li>
+              <li>• Loncat harimau</li>
             </ul>
           </div>
-
           <div class="rounded-xl p-5 bg-gradient-to-br from-sky-400/20 to-violet-500/20 border border-white/15">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-10 h-10 rounded-lg bg-sky-300/30 flex items-center justify-center text-2xl">🏐</div>
               <h2 class="text-xl font-bold">Rangkuman Materi: Bola Voli</h2>
             </div>
-            <p class="text-white/90 leading-relaxed">
-              Bola voli adalah permainan beregu dengan dua tim yang dipisahkan net. Tujuannya memukul bola melewati net agar jatuh di area lawan.
-            </p>
+            <p class="text-white/90 leading-relaxed">Bola voli adalah permainan beregu dengan dua tim yang dipisahkan net. Tujuannya memukul bola melewati net agar jatuh di area lawan.</p>
             <h3 class="mt-4 font-semibold">Teknik Dasar:</h3>
             <ul class="mt-2 space-y-2 text-white/90">
-              <li class="flex gap-2"><span>•</span><span><strong>Servis</strong>: Pukulan pertama memulai permainan (bawah/atas).</span></li>
-              <li class="flex gap-2"><span>•</span><span><strong>Passing</strong>: Menerima/mengendalikan bola (bawah dengan lengan, atas dengan jari).</span></li>
-              <li class="flex gap-2"><span>•</span><span><strong>Smash (Spike)</strong>: Pukulan keras dan menukik ke area lawan.</span></li>
-              <li class="flex gap-2"><span>•</span><span><strong>Blocking</strong>: Menahan/hadangi smash lawan di dekat net.</span></li>
-            </ul>
-            <h3 class="mt-4 font-semibold">Sistem Poin & Set:</h3>
-            <ul class="mt-2 space-y-2 text-white/90">
-              <li class="flex gap-2"><span>•</span><span>Pertandingan 3–5 set. Set dimenangkan tim pertama yang mencapai 25 poin (selisih ≥ 2).</span></li>
-              <li class="flex gap-2"><span>•</span><span>Jika 24–24, lanjut hingga selisih 2 poin (mis. 26–24).</span></li>
-              <li class="flex gap-2"><span>•</span><span>Tim pertama yang menang 3 set adalah pemenang. Set ke-5 (penentuan) sampai 15 poin (selisih ≥ 2).</span></li>
+              <li>• Servis (bawah/atas)</li>
+              <li>• Passing (bawah/atas)</li>
+              <li>• Smash (Spike)</li>
+              <li>• Blocking</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <!-- Senam Lantai -->
-      <section id="panel-senam" class="panel hidden rounded-2xl bg-white/10 backdrop-blur-md p-6 border border-white/15 shadow-xl">
+      <!-- Senam Lantai (Simulator tanpa matras) -->
+      <section id="panel-senam" class="panel rounded-2xl bg-white/10 backdrop-blur-md p-6 border border-white/15 shadow-xl">
         <div class="grid lg:grid-cols-2 gap-6">
           <!-- Simulator -->
           <div class="rounded-xl bg-white/10 p-5 border border-white/15">
-            <h2 class="text-xl font-bold mb-3">Simulator Gerakan</h2>
-            <p class="text-white/80 mb-4">Pilih gerakan untuk melihat animasi sederhana di atas matras.</p>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-xl font-bold">Simulator Gerakan — Tanpa Matras</h2>
+              <div class="flex items-center gap-2">
+                <span class="text-xs bg-amber-400/20 border border-amber-300/30 text-amber-100 px-2 py-1 rounded">Y tetap</span>
+                <span class="text-xs bg-cyan-400/20 border border-cyan-300/30 text-cyan-100 px-2 py-1 rounded">Batas: tepi bawah</span>
+              </div>
+            </div>
+            <p class="text-white/80 mb-4">Figur bergerak mendatar dan berpijak pada tepi bawah kotak (sebagai pengganti matras).</p>
 
             <!-- Stage -->
-            <div class="rounded-xl bg-gradient-to-br from-slate-900/40 to-slate-800/40 border border-white/10 p-4">
-              <!-- Mat (SVG) -->
-              <div class="relative overflow-hidden rounded-lg border border-white/10" style="height: 220px;">
-                <svg viewBox="0 0 360 220" class="w-full h-full">
-                  <!-- Matras -->
-                  <rect x="10" y="150" width="340" height="50" rx="10" ry="10" fill="url(#matGrad)" stroke="rgba(255,255,255,0.25)"/>
-                  <!-- Character: head + body -->
-                  <g id="gymnastic-figure" transform="translate(40,180)">
-                    <circle id="head" cx="0" cy="-25" r="10" fill="#FFE08A" stroke="rgba(0,0,0,0.15)"/>
-                    <rect id="body" x="-6" y="-20" width="12" height="28" rx="6" fill="#60A5FA" />
-                    <line x1="-6" y1="0" x2="-18" y2="20" stroke="#93C5FD" stroke-width="4" stroke-linecap="round"/>
-                    <line x1="6" y1="0" x2="18" y2="20" stroke="#93C5FD" stroke-width="4" stroke-linecap="round"/>
+            <div class="relative rounded-xl overflow-hidden">
+              <div class="sim-box w-full h-[180px] rounded-xl relative">
+                <!-- SVG stage -->
+                <svg id="stage" viewBox="0 0 360 180" class="w-full h-full">
+                  <!-- bayangan lantai dekat tepi bawah -->
+                  <ellipse cx="40" cy="150" rx="18" ry="6" fill="rgba(0,0,0,.15)" id="shadow"></ellipse>
+
+                  <!-- Karakter (stick-figure) pada baseline tetap -->
+                  <g id="figure" transform="translate(40,140)">
+                    <!-- kepala + badan -->
+                    <circle cx="0" cy="-20" r="8" fill="#FFE08A" stroke="rgba(0,0,0,.15)"/>
+                    <rect x="-5" y="-16" width="10" height="24" rx="5" fill="#60A5FA"/>
+                    <!-- lengan -->
+                    <line class="armL" x1="-5" y1="-6" x2="-18" y2="4" stroke="#93C5FD" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+                    <line class="armR" x1="5" y1="-6" x2="18" y2="4" stroke="#93C5FD" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+                    <!-- kaki -->
+                    <rect class="leg" x="-2" y="6" width="4" height="16" rx="2" fill="#3B82F6"/>
                   </g>
-                  <defs>
-                    <linearGradient id="matGrad" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.6"/>
-                      <stop offset="100%" stop-color="#6366f1" stop-opacity="0.6"/>
-                    </linearGradient>
-                  </defs>
                 </svg>
-              </div>
 
-              <!-- Controls -->
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
-                <button class="senam-btn rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="guling-depan">Guling Depan</button>
-                <button class="senam-btn rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="guling-belakang">Guling Belakang</button>
-                <button class="senam-btn rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="sikap-lilin">Sikap Lilin</button>
-                <button class="senam-btn rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="guling-lenting">Guling Lenting</button>
-                <button class="senam-btn rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="loncat-harimau">Loncat Harimau</button>
-                <button id="reset-figure" class="rounded-lg bg-white/20 hover:bg-white/25 font-semibold py-2.5 shadow border border-white/15 transition">Reset Posisi</button>
+                <!-- garis “matras” = tepi bawah box -->
+                <div class="ground absolute left-0 right-0 bottom-0"></div>
               </div>
+            </div>
 
-              <div id="senam-desc" class="mt-3 text-white/90 text-sm bg-white/10 rounded-lg p-3 border border-white/10 min-h-[54px]">
-                Pilih gerakan untuk mulai animasi.
-              </div>
+            <!-- Controls -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
+              <button class="btn-move rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="guling-depan">Guling Depan</button>
+              <button class="btn-move rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="guling-belakang">Guling Belakang</button>
+              <button class="btn-move rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="sikap-lilin">Sikap Lilin</button>
+              <button class="btn-move rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="guling-lenting">Guling Lenting</button>
+              <button class="btn-move rounded-lg bg-white text-indigo-700 font-semibold py-2.5 shadow hover:shadow-lg transition" data-move="loncat-harimau">Loncat Harimau</button>
+              <button id="reset-sim" class="rounded-lg bg-white/20 hover:bg-white/25 font-semibold py-2.5 shadow border border-white/15 transition">Reset Posisi</button>
+            </div>
+
+            <div id="senam-note" class="mt-3 text-white/90 text-sm bg-white/10 rounded-lg p-3 border border-white/10 min-h-[54px]">
+              Pilih gerakan untuk mulai animasi. Figur berpijak pada garis bawah kotak.
             </div>
           </div>
 
-          <!-- Challenge -->
+          <!-- Latihan Urutan -->
           <div class="rounded-xl bg-white/10 p-5 border border-white/15">
-            <h2 class="text-xl font-bold mb-3">Latihan Urutan</h2>
-            <p class="text-white/80 mb-4">Ikuti urutan gerakan yang diminta. Klik gerakan untuk membentuk urutan, lalu jalankan.</p>
+            <h2 class="text-xl font-bold mb-3">Latihan Urutan (Tanpa Matras)</h2>
+            <p class="text-white/80 mb-4">Susun gerakan lalu jalankan. Figur bergerak aman di dalam kotak.</p>
             <div class="space-y-3">
               <div class="flex items-center gap-2">
                 <span class="text-sm bg-amber-400/30 text-amber-100 px-3 py-1 rounded-full border border-amber-300/30">Target Urutan</span>
-                <div id="target-seq" class="flex flex-wrap gap-2"></div>
-                <button id="randomize-seq" class="ml-auto text-sm bg-white/15 hover:bg-white/20 border border-white/15 px-3 py-1.5 rounded-lg">Acak</button>
+                <div id="tgt" class="flex flex-wrap gap-2"></div>
+                <button id="rnd" class="ml-auto text-sm bg-white/15 hover:bg-white/20 border border-white/15 px-3 py-1.5 rounded-lg">Acak</button>
               </div>
               <div>
                 <span class="text-sm bg-cyan-400/30 text-cyan-100 px-3 py-1 rounded-full border border-cyan-300/30">Urutan Kamu</span>
-                <div id="your-seq" class="flex flex-wrap gap-2 mt-2"></div>
+                <div id="mine" class="flex flex-wrap gap-2 mt-2"></div>
               </div>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                <button class="add-move rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Guling Depan">Guling Depan</button>
-                <button class="add-move rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Guling Belakang">Guling Belakang</button>
-                <button class="add-move rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Sikap Lilin">Sikap Lilin</button>
-                <button class="add-move rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Guling Lenting">Guling Lenting</button>
-                <button class="add-move rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Loncat Harimau">Loncat Harimau</button>
-                <button id="clear-seq" class="rounded-lg bg-white/20 hover:bg-white/25 font-semibold py-2 shadow border border-white/15">Hapus</button>
+                <button class="add rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Guling Depan">Guling Depan</button>
+                <button class="add rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Guling Belakang">Guling Belakang</button>
+                <button class="add rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Sikap Lilin">Sikap Lilin</button>
+                <button class="add rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Guling Lenting">Guling Lenting</button>
+                <button class="add rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-move="Loncat Harimau">Loncat Harimau</button>
+                <button id="clr" class="rounded-lg bg-white/20 hover:bg-white/25 font-semibold py-2 shadow border border-white/15">Hapus</button>
               </div>
               <div class="flex items-center gap-3">
-                <button id="play-seq" class="rounded-lg bg-emerald-400 hover:bg-emerald-500 text-emerald-950 font-semibold px-4 py-2 shadow">
-                  Jalankan Urutan
-                </button>
-                <div id="seq-result" class="text-sm"></div>
+                <button id="play" class="rounded-lg bg-emerald-400 hover:bg-emerald-500 text-emerald-950 font-semibold px-4 py-2 shadow">Jalankan Urutan</button>
+                <div id="seqNote" class="text-sm"></div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Bola Voli -->
+      <!-- Voli -->
       <section id="panel-voli" class="panel hidden rounded-2xl bg-white/10 backdrop-blur-md p-6 border border-white/15 shadow-xl">
         <div class="grid lg:grid-cols-3 gap-6">
-          <!-- Scoreboard -->
+          <!-- Skor -->
           <div class="lg:col-span-2 rounded-xl bg-white/10 p-5 border border-white/15">
             <h2 class="text-xl font-bold mb-3">Simulator Skor Bola Voli</h2>
-            <p class="text-white/80 mb-4">Atur nama tim, tambah poin, dan sistem set akan berjalan otomatis sesuai aturan resmi.</p>
-
-            <!-- Team names -->
+            <p class="text-white/80 mb-4">Atur nama tim, tambah poin, dan sistem set berjalan otomatis.</p>
             <form id="team-form" class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end mb-4">
               <div class="flex-1">
                 <label class="text-sm text-white/80">Nama Tim A</label>
-                <input id="teamAName" type="text" class="w-full mt-1 px-3 py-2 rounded-lg bg-white text-slate-800 placeholder-slate-400 border-2 border-transparent focus:border-indigo-400 outline-none" placeholder="Tim A" value="Garuda">
+                <input id="teamAName" type="text" class="w-full mt-1 px-3 py-2 rounded-lg bg-white text-slate-800 border-2 border-transparent focus:border-indigo-400 outline-none" value="Garuda">
               </div>
               <div class="flex-1">
                 <label class="text-sm text-white/80">Nama Tim B</label>
-                <input id="teamBName" type="text" class="w-full mt-1 px-3 py-2 rounded-lg bg-white text-slate-800 placeholder-slate-400 border-2 border-transparent focus:border-indigo-400 outline-none" placeholder="Tim B" value="Rajawali">
+                <input id="teamBName" type="text" class="w-full mt-1 px-3 py-2 rounded-lg bg-white text-slate-800 border-2 border-transparent focus:border-indigo-400 outline-none" value="Rajawali">
               </div>
-              <button type="submit" class="rounded-lg bg-white text-indigo-700 font-semibold px-4 py-2 shadow">
-                Simpan Nama
-              </button>
+              <button type="submit" class="rounded-lg bg-white text-indigo-700 font-semibold px-4 py-2 shadow">Simpan Nama</button>
             </form>
-
-            <!-- Score Display -->
             <div class="rounded-xl bg-gradient-to-br from-slate-900/40 to-slate-800/40 border border-white/10 p-4">
               <div class="flex items-center justify-between gap-4">
                 <div class="flex-1">
@@ -270,16 +257,12 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Controls -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
                 <button id="addA" class="rounded-lg bg-emerald-400 hover:bg-emerald-500 text-emerald-950 font-semibold py-2 shadow">+1 A</button>
                 <button id="addB" class="rounded-lg bg-emerald-400 hover:bg-emerald-500 text-emerald-950 font-semibold py-2 shadow">+1 B</button>
                 <button id="undoPoint" class="rounded-lg bg-white/20 hover:bg-white/25 font-semibold py-2 shadow border border-white/15">Undo</button>
                 <button id="resetSet" class="rounded-lg bg-white/20 hover:bg-white/25 font-semibold py-2 shadow border border-white/15">Reset Set</button>
               </div>
-
-              <!-- Sets -->
               <div class="mt-4">
                 <div class="flex items-center justify-between">
                   <div class="text-sm text-white/80">Set Berjalan: <span id="currentSet">1</span> / 5</div>
@@ -287,16 +270,51 @@
                 </div>
                 <div id="sets" class="grid grid-cols-5 gap-2 mt-3"></div>
               </div>
-
-              <!-- Notice -->
               <div id="matchStatus" class="mt-3 text-center text-sm"></div>
             </div>
           </div>
 
-          <!-- Teknik Dasar Helper -->
+          <!-- Latihan Teknik + Mini-simulator (dengan net) -->
           <div class="rounded-xl bg-white/10 p-5 border border-white/15">
             <h3 class="text-lg font-bold mb-2">Latihan Teknik Dasar</h3>
-            <p class="text-white/80 mb-3">Pilih teknik lalu ikuti tips singkatnya.</p>
+            <p class="text-white/80 mb-3">Pilih teknik lalu lihat simulasi singkat stickman dan tipsnya.</p>
+            <!-- Mini Simulator Volley -->
+            <div class="rounded-xl bg-gradient-to-br from-slate-900/40 to-slate-800/40 border border-white/10 p-3 mb-3">
+              <div class="relative rounded-lg overflow-hidden" style="height: 180px;">
+                <svg id="vb-stage" viewBox="0 0 360 160" class="w-full h-full">
+                  <defs>
+                    <linearGradient id="vbBg" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.12"/>
+                      <stop offset="100%" stop-color="#6366f1" stop-opacity="0.12"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="8" y="10" width="344" height="140" rx="12" fill="url(#vbBg)" stroke="rgba(255,255,255,.15)"/>
+                  <!-- Garis lantai -->
+                  <line x1="16" y1="130" x2="344" y2="130" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+                  <!-- Net visual (di tengah) -->
+                  <line x1="180" y1="36" x2="180" y2="130" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-dasharray="6 5"/>
+                  <rect x="176" y="34" width="8" height="6" rx="2" fill="rgba(255,255,255,.6)"/>
+                  <rect x="176" y="130" width="8" height="6" rx="2" fill="rgba(255,255,255,.6)"/>
+                  <!-- Bayangan bola -->
+                  <ellipse id="vb-shadow" cx="100" cy="136" rx="10" ry="3" fill="rgba(0,0,0,.18)"/>
+                  <!-- Figur stickman -->
+                  <g id="vb-figure" transform="translate(60,126)">
+                    <circle cx="0" cy="-18" r="7" fill="#FFE08A" stroke="rgba(0,0,0,.15)"/>
+                    <rect x="-4.5" y="-14" width="9" height="20" rx="4.5" fill="#60A5FA"/>
+                    <!-- lengan -->
+                    <line id="vb-armL" x1="-4" y1="-6" x2="-18" y2="4" stroke="#93C5FD" stroke-width="4" stroke-linecap="round"/>
+                    <line id="vb-armR" x1="4" y1="-6" x2="18" y2="4" stroke="#93C5FD" stroke-width="4" stroke-linecap="round"/>
+                    <!-- kaki -->
+                    <line x1="-2" y1="6" x2="-4" y2="16" stroke="#3B82F6" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="2" y1="6" x2="4" y2="16" stroke="#3B82F6" stroke-width="4" stroke-linecap="round"/>
+                  </g>
+                  <!-- Bola -->
+                  <circle id="vb-ball" cx="100" cy="120" r="6" fill="#fff" stroke="#e2e8f0"/>
+                </svg>
+              </div>
+              <div class="text-xs text-white/70 mt-2">Tip: Klik teknik untuk memutar simulasi mini.</div>
+            </div>
+
             <div class="space-y-3">
               <div class="grid grid-cols-2 gap-2">
                 <button class="tech-btn rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-tech="Servis Bawah">Servis Bawah</button>
@@ -306,9 +324,7 @@
                 <button class="tech-btn rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-tech="Smash">Smash</button>
                 <button class="tech-btn rounded-lg bg-white text-indigo-700 font-semibold py-2 shadow" data-tech="Blocking">Blocking</button>
               </div>
-              <div id="techTips" class="rounded-lg bg-white/10 border border-white/10 p-3 min-h-[80px] text-white/90">
-                Pilih teknik untuk melihat tips.
-              </div>
+              <div id="techTips" class="rounded-lg bg-white/10 border border-white/10 p-3 min-h-[80px] text-white/90">Pilih teknik untuk melihat tips.</div>
             </div>
           </div>
         </div>
@@ -317,26 +333,22 @@
       <!-- Kuis -->
       <section id="panel-kuis" class="panel hidden rounded-2xl bg-white/10 backdrop-blur-md p-6 border border-white/15 shadow-xl">
         <h2 class="text-xl font-bold mb-3">Kuis Cepat</h2>
-        <p class="text-white/80 mb-4">Jawab pertanyaan berikut. Kamu bisa lihat skor di akhir.</p>
-
+        <p class="text-white/80 mb-4">Jawab pertanyaan berikut.</p>
         <form id="quizForm" class="space-y-4">
-          <!-- Q1 -->
           <div class="rounded-xl bg-white/10 border border-white/15 p-4">
             <p class="font-semibold">1) Senam lantai dilakukan di atas apa?</p>
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <label class="flex gap-2 items-center"><input type="radio" name="q1" value="S" class="accent-emerald-400"><span>Matras/lantai</span></label>
-              <label class="flex gap-2 items-center"><input type="radio" name="q1" value="X" class="accent-emerald-400"><span>Rumput</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q1" value="S" class="accent-emerald-400"><span>Lantai</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q1" value="X" class="accent-emerald-400"><span>Air</span></label>
             </div>
           </div>
-          <!-- Q2 -->
           <div class="rounded-xl bg-white/10 border border-white/15 p-4">
             <p class="font-semibold">2) Gerakan mengangkat kedua kaki lurus ke atas disebut?</p>
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
               <label class="flex gap-2 items-center"><input type="radio" name="q2" value="S" class="accent-emerald-400"><span>Sikap lilin</span></label>
-              <label class="flex gap-2 items-center"><input type="radio" name="q2" value="X" class="accent-emerald-400"><span>Loncat harimau</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q2" value="X" class="accent-emerald-400"><span>Servis</span></label>
             </div>
           </div>
-          <!-- Q3 -->
           <div class="rounded-xl bg-white/10 border border-white/15 p-4">
             <p class="font-semibold">3) Pukulan pertama untuk memulai permainan voli adalah?</p>
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -344,28 +356,123 @@
               <label class="flex gap-2 items-center"><input type="radio" name="q3" value="X" class="accent-emerald-400"><span>Smash</span></label>
             </div>
           </div>
-          <!-- Q4 -->
           <div class="rounded-xl bg-white/10 border border-white/15 p-4">
             <p class="font-semibold">4) Passing bawah dilakukan menggunakan?</p>
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
               <label class="flex gap-2 items-center"><input type="radio" name="q4" value="S" class="accent-emerald-400"><span>Lengan</span></label>
-              <label class="flex gap-2 items-center"><input type="radio" name="q4" value="X" class="accent-emerald-400"><span>Telapak tangan</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q4" value="X" class="accent-emerald-400"><span>Kepala</span></label>
             </div>
           </div>
-          <!-- Q5 -->
           <div class="rounded-xl bg-white/10 border border-white/15 p-4">
             <p class="font-semibold">5) Set voli dimenangkan saat mencapai?</p>
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
               <label class="flex gap-2 items-center"><input type="radio" name="q5" value="S" class="accent-emerald-400"><span>25 poin (selisih ≥ 2)</span></label>
-              <label class="flex gap-2 items-center"><input type="radio" name="q5" value="X" class="accent-emerald-400"><span>20 poin (tanpa selisih)</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q5" value="X" class="accent-emerald-400"><span>18 poin (tanpa selisih)</span></label>
             </div>
           </div>
-          <!-- Q6 -->
           <div class="rounded-xl bg-white/10 border border-white/15 p-4">
             <p class="font-semibold">6) Set kelima (penentuan) dimainkan sampai?</p>
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
               <label class="flex gap-2 items-center"><input type="radio" name="q6" value="S" class="accent-emerald-400"><span>15 poin (selisih ≥ 2)</span></label>
               <label class="flex gap-2 items-center"><input type="radio" name="q6" value="X" class="accent-emerald-400"><span>10 poin (tanpa selisih)</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">7) Jumlah pemain tiap tim di lapangan adalah?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q7" value="S" class="accent-emerald-400"><span>6 orang</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q7" value="X" class="accent-emerald-400"><span>8 orang</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">8) Rotasi pemain saat servis dilakukan ke arah?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q8" value="S" class="accent-emerald-400"><span>Searah jarum jam</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q8" value="X" class="accent-emerald-400"><span>Berlawanan jarum jam</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">9) Area servis berada di?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q9" value="S" class="accent-emerald-400"><span>Belakang garis akhir</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q9" value="X" class="accent-emerald-400"><span>Depan garis serang</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">10) Sentuhan maksimal tim sebelum mengembalikan bola adalah?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q10" value="S" class="accent-emerald-400"><span>3 kali</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q10" value="X" class="accent-emerald-400"><span>5 kali</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">11) Teknik untuk menghalau smash lawan di atas net adalah?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q11" value="S" class="accent-emerald-400"><span>Blocking</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q11" value="X" class="accent-emerald-400"><span>Servis</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">12) Passing atas menggunakan bagian?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q12" value="S" class="accent-emerald-400"><span>Ujung jari</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q12" value="X" class="accent-emerald-400"><span>Telapak penuh</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">13) Passing bawah menggunakan bagian?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q13" value="S" class="accent-emerald-400"><span>Lengan bawah</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q13" value="X" class="accent-emerald-400"><span>Jari tangan</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">14) Servis bawah dilakukan dengan ayunan dari?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q14" value="S" class="accent-emerald-400"><span>Belakang ke depan</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q14" value="X" class="accent-emerald-400"><span>Atas ke bawah</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">15) Rangkaian gerak smash yang benar adalah?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q15" value="S" class="accent-emerald-400"><span>Awalan, tolakan, pukulan</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q15" value="X" class="accent-emerald-400"><span>Jongkok, duduk, berdiri</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">16) Bola menyentuh garis adalah?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q16" value="S" class="accent-emerald-400"><span>Masuk (in)</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q16" value="X" class="accent-emerald-400"><span>Keluar (out)</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">17) Menyentuh net saat bermain adalah?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q17" value="S" class="accent-emerald-400"><span>Kesalahan (fault)</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q17" value="X" class="accent-emerald-400"><span>Diperbolehkan</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">18) Set penentuan dimainkan sampai?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q18" value="S" class="accent-emerald-400"><span>15 poin (selisih ≥ 2)</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q18" value="X" class="accent-emerald-400"><span>12 poin (tanpa selisih)</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">19) Posisi siap bertahan yang benar adalah?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q19" value="S" class="accent-emerald-400"><span>Kuda-kuda rendah</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q19" value="X" class="accent-emerald-400"><span>Tangan di saku</span></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+            <p class="font-semibold">20) Saat blocking, posisi jari yang benar?</p>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex gap-2 items-center"><input type="radio" name="q20" value="S" class="accent-emerald-400"><span>Rapat menghadap depan</span></label>
+              <label class="flex gap-2 items-center"><input type="radio" name="q20" value="X" class="accent-emerald-400"><span>Renggang menghadap bawah</span></label>
             </div>
           </div>
 
@@ -380,333 +487,375 @@
   </div>
 
   <script>
-    // Simple helper
-    const $ = (sel, root=document) => root.querySelector(sel);
-    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    // Helper
+    const $ = (s, r=document)=>r.querySelector(s);
+    const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+    const easeInOut = t => t<0.5 ? 2*t*t : -1+(4-2*t)*t;
 
     // Tabs
-    const tabs = $$(".tab-btn");
-    const panels = $$(".panel");
-    function showPanel(key) {
-      panels.forEach(p => p.classList.add("hidden"));
+    const tabs=$$(".tab-btn"), panels=$$(".panel");
+    function showPanel(key){
+      panels.forEach(p=>p.classList.add("hidden"));
       $("#panel-"+key).classList.remove("hidden");
-      tabs.forEach(b => b.classList.remove("active","bg-white","text-indigo-700"));
-      const btn = tabs.find(b=>b.dataset.tab===key);
-      btn.classList.add("active","bg-white","text-indigo-700");
+      tabs.forEach(b=>b.classList.remove("active","bg-white","text-indigo-700"));
+      tabs.find(b=>b.dataset.tab===key)?.classList.add("active","bg-white","text-indigo-700");
     }
-    tabs.forEach(btn => btn.addEventListener("click", () => showPanel(btn.dataset.tab)));
+    tabs.forEach(b=>b.addEventListener("click",()=>showPanel(b.dataset.tab)));
+    showPanel("senam");
 
-    // SENAM: Animation control
-    const figure = $("#gymnastic-figure");
-    const head = $("#head");
-    const body = $("#body");
-    const senamDesc = $("#senam-desc");
-    const startTransform = "translate(40,180)";
-
-    function resetFigure() {
-      figure.setAttribute("transform", startTransform);
-      figure.classList.remove("anim-roll-forward","anim-roll-backward","anim-candle","anim-lenting","anim-tiger");
-      head.setAttribute("r", "10");
-      body.setAttribute("height","28");
-      body.setAttribute("y","-20");
+    // Simulator Senam (tanpa matras)
+    const figure = $("#figure");
+    const shadow = $("#shadow");
+    const note = $("#senam-note");
+    const baselineY = 140, shadowY = 150, startX = 40;
+    const SAFE_LEFT = 20, SAFE_RIGHT = 340, FIG_HALF = 10;
+    const clampX = x => Math.min(SAFE_RIGHT-FIG_HALF, Math.max(SAFE_LEFT+FIG_HALF, x));
+    function setFigure(x = startX){
+      const cx = clampX(x);
+      figure.setAttribute("transform", `translate(${cx},${baselineY})`);
+      shadow.setAttribute("cx", cx);
+      shadow.setAttribute("cy", shadowY);
     }
-
-    function describe(text) {
-      senamDesc.textContent = text;
-      senamDesc.classList.remove("fade-in");
-      void senamDesc.offsetWidth; // reflow to reset animation
-      senamDesc.classList.add("fade-in");
+    function resetFigure(){
+      setFigure(startX);
+      figure.classList.remove("do-roll-forward","do-roll-backward","do-lenting","do-tiger","do-candle");
+      void figure.offsetWidth;
     }
-
-    function playMove(move) {
+    function describe(t){
+      note.textContent = t;
+      note.classList.remove("fade-in"); void note.offsetWidth; note.classList.add("fade-in");
+    }
+    function play(move){
       resetFigure();
-      // slight delay to allow CSS class to re-apply
       setTimeout(()=>{
-        if (move === "guling-depan") {
-          figure.classList.add("anim-roll-forward");
-          describe("Guling depan: menggulingkan badan ke depan dari posisi jongkok.");
-        } else if (move === "guling-belakang") {
-          figure.setAttribute("transform","translate(40,150)"); // start left
-          figure.classList.add("anim-roll-backward");
-          describe("Guling belakang: menggulingkan badan ke belakang.");
-        } else if (move === "sikap-lilin") {
-          figure.classList.add("anim-candle");
-          describe("Sikap lilin: kaki lurus ke atas, tumpuan punggung dan pundak, tangan menyangga pinggang.");
-        } else if (move === "guling-lenting") {
-          figure.classList.add("anim-lenting");
-          describe("Guling lenting: melentingkan badan ke depan-atas hingga badan melayang.");
-        } else if (move === "loncat-harimau") {
-          figure.classList.add("anim-tiger");
-          describe("Loncat harimau: melompat ke depan lalu lanjut guling depan.");
+        if(move==="guling-depan"){
+          figure.classList.add("do-roll-forward");
+          describe("Guling depan: maju mendatar di atas garis bawah.");
+        }else if(move==="guling-belakang"){
+          setFigure(startX+200);
+          figure.classList.add("do-roll-backward");
+          describe("Guling belakang: mundur mendatar kembali ke kiri.");
+        }else if(move==="sikap-lilin"){
+          figure.classList.add("do-candle");
+          describe("Sikap lilin: posisi tetap, hanya pose berubah.");
+        }else if(move==="guling-lenting"){
+          figure.classList.add("do-lenting");
+          describe("Guling lenting: dorong ke depan (mendatar).");
+        }else if(move==="loncat-harimau"){
+          figure.classList.add("do-tiger");
+          describe("Loncat harimau: loncatan maju (mendatar) aman dari tepi.");
         }
-      }, 20);
+      },20);
     }
+    $$(".btn-move").forEach(b=>b.addEventListener("click",()=>play(b.dataset.move)));
+    $("#reset-sim").addEventListener("click",()=>{ resetFigure(); describe("Posisi direset. Pilih gerakan untuk mulai animasi."); });
 
-    $$(".senam-btn").forEach(b => b.addEventListener("click", () => playMove(b.dataset.move)));
-    $("#reset-figure").addEventListener("click", () => {
-      resetFigure();
-      describe("Posisi direset. Pilih gerakan untuk mulai animasi.");
-    });
-
-    // SENAM: Sequence challenge
-    const movesList = ["Guling Depan","Guling Belakang","Sikap Lilin","Guling Lenting","Loncat Harimau"];
-    const targetSeqEl = $("#target-seq");
-    const yourSeqEl = $("#your-seq");
-    const seqResult = $("#seq-result");
-    let targetSeq = [];
-    let yourSeq = [];
-    function chip(text, tone="white") {
-      const base = document.createElement("span");
-      base.className = "text-xs px-2.5 py-1 rounded-full border " + (tone==="white" ? "bg-white/90 text-indigo-700 border-white" : "bg-white/15 text-white border-white/20");
-      base.textContent = text;
-      return base;
+    // Latihan Urutan
+    const moves = ["Guling Depan","Guling Belakang","Sikap Lilin","Guling Lenting","Loncat Harimau"];
+    const tgtEl=$("#tgt"), mineEl=$("#mine"), seqNote=$("#seqNote");
+    let target=[], mine=[];
+    function chip(t, soft=false){
+      const el=document.createElement("span");
+      el.className = "text-xs px-2.5 py-1 rounded-full border "+(soft?"bg-white/15 text-white border-white/20":"bg-white text-indigo-700 border-white");
+      el.textContent=t; return el;
     }
-    function renderSeq() {
-      targetSeqEl.innerHTML = "";
-      yourSeqEl.innerHTML = "";
-      targetSeq.forEach(t => targetSeqEl.appendChild(chip(t,"white")));
-      yourSeq.forEach((t,idx) => {
-        const c = chip((idx+1)+". "+t,"soft");
+    function renderSeq(){
+      tgtEl.innerHTML=""; mineEl.innerHTML="";
+      target.forEach(t=>tgtEl.appendChild(chip(t,false)));
+      mine.forEach((m,i)=>{
+        const c=chip((i+1)+". "+m,true);
         c.classList.add("cursor-pointer","hover:bg-white/25");
-        c.title = "Klik untuk hapus item ini";
-        c.addEventListener("click", () => {
-          yourSeq.splice(idx,1);
-          renderSeq();
-        });
-        yourSeqEl.appendChild(c);
+        c.title="Klik untuk hapus item ini";
+        c.addEventListener("click",()=>{ mine.splice(i,1); renderSeq(); });
+        mineEl.appendChild(c);
       });
     }
-    function randomizeTarget() {
-      const shuffled = [...movesList].sort(()=>Math.random()-0.5);
-      const len = 3; // short sequence
-      targetSeq = shuffled.slice(0,len);
-      renderSeq();
-      seqResult.textContent = "Tantangan siap! Bentuk urutannya lalu jalankan.";
-      seqResult.className = "text-sm text-white/90";
+    function randomize(){
+      const s=[...moves].sort(()=>Math.random()-0.5);
+      target=s.slice(0,3); renderSeq();
+      seqNote.textContent="Tantangan siap. Susun dan jalankan!";
+      seqNote.className="text-sm text-white/90";
     }
-    $("#randomize-seq").addEventListener("click", randomizeTarget);
-    $("#clear-seq").addEventListener("click", () => { yourSeq=[]; renderSeq(); seqResult.textContent="Urutan kamu dihapus."; seqResult.className="text-sm text-white/80"; });
-    $$(".add-move").forEach(b => b.addEventListener("click", () => { yourSeq.push(b.dataset.move); renderSeq(); }));
-
-    // Play sequence visually and check
-    function playSequenceVisual(seq, onDone) {
-      // map names to internal keys
-      const map = {
-        "Guling Depan":"guling-depan",
-        "Guling Belakang":"guling-belakang",
-        "Sikap Lilin":"sikap-lilin",
-        "Guling Lenting":"guling-lenting",
-        "Loncat Harimau":"loncat-harimau"
-      };
+    $("#rnd").addEventListener("click",randomize);
+    $("#clr").addEventListener("click",()=>{ mine=[]; renderSeq(); seqNote.textContent="Urutan kamu dihapus."; seqNote.className="text-sm text-white/80"; });
+    $$(".add").forEach(b=>b.addEventListener("click",()=>{ mine.push(b.dataset.move); renderSeq(); }));
+    const mapMove = name => ({
+      "Guling Depan":"guling-depan",
+      "Guling Belakang":"guling-belakang",
+      "Sikap Lilin":"sikap-lilin",
+      "Guling Lenting":"guling-lenting",
+      "Loncat Harimau":"loncat-harimau"
+    }[name]);
+    function playSeq(list, done){
       let i=0;
-      function step() {
-        if (i>=seq.length) { onDone && onDone(); return; }
-        playMove(map[seq[i]]);
-        i++;
-        setTimeout(step, 1300);
+      function step(){
+        if(i>=list.length){ done&&done(); return; }
+        play(mapMove(list[i]));
+        i++; setTimeout(step, 1200);
       }
       step();
     }
-    $("#play-seq").addEventListener("click", () => {
-      if (targetSeq.length===0) randomizeTarget();
-      if (yourSeq.length===0) {
-        seqResult.textContent = "Tambahkan minimal 1 gerakan dulu ya!";
-        seqResult.className = "text-sm text-amber-200";
-        return;
-      }
-      playSequenceVisual(yourSeq, () => {
-        const correct = yourSeq.length===targetSeq.length && yourSeq.every((v,i)=>v===targetSeq[i]);
-        if (correct) {
-          seqResult.textContent = "Mantap! Urutan kamu BENAR 🎉";
-          seqResult.className = "text-sm text-emerald-200";
-        } else {
-          seqResult.textContent = "Belum tepat. Coba cocokkan lagi urutannya!";
-          seqResult.className = "text-sm text-rose-200";
-        }
+    $("#play").addEventListener("click", ()=>{
+      if(target.length===0) randomize();
+      if(mine.length===0){ seqNote.textContent="Tambahkan minimal 1 gerakan dulu ya!"; seqNote.className="text-sm text-amber-200"; return; }
+      playSeq(mine, ()=>{
+        const ok = mine.length===target.length && mine.every((v,i)=>v===target[i]);
+        if(ok){ seqNote.textContent="Hebat! Urutannya TEPAT 🎉"; seqNote.className="text-sm text-emerald-200"; }
+        else { seqNote.textContent="Belum tepat, coba cocokkan lagi urutannya."; seqNote.className="text-sm text-rose-200"; }
       });
     });
-    // initialize sequence on load
-    randomizeTarget();
+    randomize(); resetFigure(); describe("Pilih gerakan untuk mulai animasi. Figur berpijak pada tepi bawah kotak.");
 
-    // VOLI: Scoreboard logic
-    const nameAEl = $("#nameA");
-    const nameBEl = $("#nameB");
-    const scoreAEl = $("#scoreA");
-    const scoreBEl = $("#scoreB");
-    const serveAEl = $("#serveA");
-    const serveBEl = $("#serveB");
-    const setsEl = $("#sets");
-    const currentSetEl = $("#currentSet");
-    const matchStatus = $("#matchStatus");
+    // ————— Mini-simulator VOLI: animasi bola & stickman + NET —————
+    const vbFigure = $("#vb-figure");
+    const vbBall = $("#vb-ball");
+    const vbShadow = $("#vb-shadow");
+    const armL = $("#vb-armL");
+    const armR = $("#vb-armR");
+    const tipsBox = $("#techTips");
 
-    let state = {
-      teamA: "Garuda",
-      teamB: "Rajawali",
-      scoreA: 0,
-      scoreB: 0,
-      sets: [], // array of {a,b}
-      currentSet: 1,
-      serve: "A", // A or B
-      history: [] // for undo: {who:'A'|'B'}
-    };
-
-    function renderServe() {
-      serveAEl.classList.toggle("hidden", state.serve!=="A");
-      serveBEl.classList.toggle("hidden", state.serve!=="B");
+    // posisi dasar
+    const base = { fx: 60, fy: 126, bx: 100, by: 120, sy: 136 };
+    let rafId = null, pendingTimeouts = [];
+    function clearTimers(){
+      if (rafId) cancelAnimationFrame(rafId);
+      pendingTimeouts.forEach(t=>clearTimeout(t)); pendingTimeouts=[];
     }
-
-    function renderScores() {
-      scoreAEl.textContent = state.scoreA;
-      scoreBEl.textContent = state.scoreB;
-      currentSetEl.textContent = state.currentSet;
-      // render set chips
-      setsEl.innerHTML = "";
-      for (let i=0;i<5;i++) {
-        const data = state.sets[i] || null;
-        const box = document.createElement("div");
-        box.className = "rounded-lg px-3 py-2 border text-center " + (i===state.currentSet-1 ? "bg-white/20 border-white/40" : "bg-white/10 border-white/15");
-        const title = document.createElement("div");
-        title.className = "text-xs text-white/70";
-        title.textContent = "Set "+(i+1);
-        const score = document.createElement("div");
-        score.className = "font-semibold";
-        score.textContent = data ? (data.a+" : "+data.b) : "-";
-        box.appendChild(title);
-        box.appendChild(score);
-        setsEl.appendChild(box);
+    function setFigureXY(x=base.fx, y=base.fy){ vbFigure.setAttribute("transform", `translate(${x},${y})`); }
+    function setBallXY(x=base.bx, y=base.by){
+      vbBall.setAttribute("cx", x); vbBall.setAttribute("cy", y);
+      vbShadow.setAttribute("cx", x); vbShadow.setAttribute("cy", base.sy);
+    }
+    function arms(position="neutral"){
+      if(position==="platform"){ // passing bawah
+        armL.setAttribute("x2", "-20"); armL.setAttribute("y2", 2);
+        armR.setAttribute("x2", "20"); armR.setAttribute("y2", 2);
+      }else if(position==="overhead"){ // passing atas / servis atas
+        armL.setAttribute("x2", "-8"); armL.setAttribute("y2", "-20");
+        armR.setAttribute("x2", "8");  armR.setAttribute("y2", "-20");
+      }else if(position==="swing"){ // smash/servis
+        armL.setAttribute("x2", "-10"); armL.setAttribute("y2", "-8");
+        armR.setAttribute("x2", "24");  armR.setAttribute("y2", "-2");
+      }else{ // neutral
+        armL.setAttribute("x2", "-18"); armL.setAttribute("y2", "4");
+        armR.setAttribute("x2", "18");  armR.setAttribute("y2", "4");
       }
     }
-
-    function resetSetScores() {
-      state.scoreA = 0;
-      state.scoreB = 0;
-      state.history = [];
-      renderScores();
-    }
-
-    function setTargetPoints() {
-      // Set 5 target 15, others 25
-      return state.currentSet === 5 ? 15 : 25;
-    }
-
-    function checkSetEnd() {
-      const target = setTargetPoints();
-      const a = state.scoreA, b = state.scoreB;
-      const diff = Math.abs(a-b);
-      if ((a>=target || b>=target) && diff>=2) {
-        // set finished
-        state.sets[state.currentSet-1] = {a,b};
-        const winner = a>b ? "A":"B";
-        matchStatus.textContent = "Set "+state.currentSet+" dimenangkan oleh Tim "+(winner==="A"?state.teamA:state.teamB)+" ✅";
-        matchStatus.className = "mt-3 text-center text-sm text-emerald-200";
-        // advance set or end match
-        const winsA = state.sets.filter(s => s && s.a>s.b).length;
-        const winsB = state.sets.filter(s => s && s.b>s.a).length;
-        if (winsA===3 || winsB===3 || state.currentSet===5) {
-          // match end
-          const champ = winsA>winsB ? state.teamA : state.teamB;
-          matchStatus.textContent = "Pertandingan selesai! Pemenang: "+champ+" 🏆";
-          matchStatus.className = "mt-3 text-center text-sm text-amber-200";
-        } else {
-          state.currentSet += 1;
-          resetSetScores();
-          // serving team starts next set can be alternated
-          state.serve = (state.currentSet % 2 === 1) ? "A" : "B";
-          renderServe();
-          renderScores();
+    function animate(ms, draw){
+      const start = performance.now();
+      return new Promise(resolve=>{
+        function frame(now){
+          let t = (now - start) / ms;
+          if (t>1) t=1;
+          draw(easeInOut(t));
+          if (t<1){ rafId = requestAnimationFrame(frame); }
+          else resolve();
         }
-        renderScores();
-        return true;
-      }
-      return false;
+        rafId = requestAnimationFrame(frame);
+      });
+    }
+    // lintasan lengkung sederhana (quadratic)
+    function quad(p0, p1, p2, t){
+      const x = (1-t)*(1-t)*p0.x + 2*(1-t)*t*p1.x + t*t*p2.x;
+      const y = (1-t)*(1-t)*p0.y + 2*(1-t)*t*p1.y + t*t*p2.y;
+      return {x,y};
+    }
+    function tip(text, list){
+      tipsBox.innerHTML = "<div class='font-semibold mb-1'>"+text+"</div>"+ (list?("<ul class='list-disc pl-5 space-y-1'>"+list.map(s=>"<li>"+s+"</li>").join("")+"</ul>"):"");
+      tipsBox.classList.remove("fade-in"); void tipsBox.offsetWidth; tipsBox.classList.add("fade-in");
+    }
+    async function resetVB(){
+      clearTimers(); setFigureXY(base.fx, base.fy); setBallXY(base.bx, base.by); arms("neutral");
+      await new Promise(r=>setTimeout(r,10));
     }
 
-    function addPoint(who) {
-      if (state.sets[state.currentSet-1]) return; // set already closed
-      if (who==="A") state.scoreA++; else state.scoreB++;
-      state.history.push({who});
-      // rally point system: serving team becomes the scorer
-      state.serve = who;
-      renderServe();
-      renderScores();
-      checkSetEnd();
+    async function servisBawah(){
+      await resetVB();
+      arms("platform"); // sedikit platform untuk toss rendah
+      // toss kecil
+      await animate(350, t=>{
+        const y = base.by - 18*t; setBallXY(base.bx, y);
+      });
+      arms("swing");
+      // pukul ke depan melengkung melewati net (x=180)
+      const p0 = {x: base.bx, y: base.by-18};
+      const p1 = {x: 170, y: 80};
+      const p2 = {x: 300, y: 118};
+      await animate(600, t=>{
+        const {x,y} = quad(p0,p1,p2,t); setBallXY(x,y);
+      });
+      arms("neutral");
+    }
+    async function servisAtas(){
+      await resetVB();
+      arms("overhead");
+      // toss tinggi
+      await animate(450, t=>{
+        const y = base.by - 40*t; setBallXY(base.bx, y);
+      });
+      arms("swing");
+      const p0 = {x: base.bx, y: base.by-40};
+      const p1 = {x: 180, y: 60};
+      const p2 = {x: 310, y: 118};
+      await animate(650, t=>{
+        const {x,y} = quad(p0,p1,p2,t); setBallXY(x,y);
+      });
+      arms("neutral");
+    }
+    async function passingBawah(){
+      await resetVB();
+      arms("platform");
+      // bola datang dari kanan bawah, memantul naik
+      const p0 = {x: 220, y: 122};
+      const p1 = {x: 150, y: 128};
+      const p2 = {x: base.bx, y: base.by};
+      await animate(500, t=>{ const {x,y}=quad(p0,p1,p2,t); setBallXY(x,y); });
+      // dorong naik
+      await animate(450, t=>{
+        const p = quad({x:base.bx,y:base.by},{x:130,y:90},{x:160,y:110}, t);
+        setBallXY(p.x, p.y);
+      });
+      arms("neutral");
+    }
+    async function passingAtas(){
+      await resetVB();
+      arms("overhead");
+      // bola naik lalu diarahkan ke depan
+      const p0 = {x: base.bx, y: base.by};
+      const p1 = {x: 120, y: 70};
+      const p2 = {x: 200, y: 110};
+      await animate(600, t=>{ const {x,y}=quad(p0,p1,p2,t); setBallXY(x,y); });
+      arms("neutral");
+    }
+    async function smash(){
+      await resetVB();
+      // figure ke dekat net
+      await animate(400, t=>{
+        const x = base.fx + (150-base.fx)*t; setFigureXY(x, base.fy-6*t); arms("overhead");
+      });
+      // set bola di atas net
+      setBallXY(180, 80);
+      await new Promise(r=>setTimeout(r,120));
+      arms("swing");
+      // bola menukik ke kanan
+      const p0 = {x:180,y:80}, p1 = {x:230,y:70}, p2 = {x:320,y:125};
+      await animate(450, t=>{ const {x,y}=quad(p0,p1,p2,t); setBallXY(x,y); });
+      arms("neutral");
+      // figure kembali sedikit
+      await animate(250, t=>{ setFigureXY(150 - 20*t, base.fy - 6 + 6*t); });
+    }
+    async function blocking(){
+      await resetVB();
+      // figure ke net
+      await animate(350, t=>{
+        const x = base.fx + (170-base.fx)*t; setFigureXY(x, base.fy); arms("overhead");
+      });
+      // bola datang dari kanan dan mental kembali
+      const pIn0 = {x: 300, y: 95}, pIn1={x:230,y:85}, pIn2={x:182,y:90};
+      await animate(380, t=>{ const {x,y}=quad(pIn0,pIn1,pIn2,t); setBallXY(x,y); });
+      // pantul balik ke kiri
+      const pOut0 = {x:182,y:90}, pOut1={x:150,y:80}, pOut2={x:110,y:118};
+      await animate(420, t=>{ const {x,y}=quad(pOut0,pOut1,pOut2,t); setBallXY(x,y); });
+      arms("neutral");
     }
 
-    function undoPoint() {
-      const last = state.history.pop();
-      if (!last) return;
-      if (last.who==="A" && state.scoreA>0) state.scoreA--;
-      if (last.who==="B" && state.scoreB>0) state.scoreB--;
-      // cannot perfectly restore serve history, but switch to last scorer if exists
-      const prev = state.history[state.history.length-1];
-      state.serve = prev ? prev.who : state.serve;
-      renderServe();
-      renderScores();
-      matchStatus.textContent = "";
-    }
-
-    $("#addA").addEventListener("click", ()=>addPoint("A"));
-    $("#addB").addEventListener("click", ()=>addPoint("B"));
-    $("#undoPoint").addEventListener("click", undoPoint);
-    $("#resetSet").addEventListener("click", ()=>{ resetSetScores(); matchStatus.textContent="Set direset."; matchStatus.className="mt-3 text-center text-sm text-white/80"; });
-
-    $("#resetMatch").addEventListener("click", ()=>{
-      state.scoreA=0; state.scoreB=0; state.sets=[]; state.currentSet=1; state.history=[]; state.serve="A";
-      matchStatus.textContent="Pertandingan direset.";
-      matchStatus.className="mt-3 text-center text-sm text-white/80";
-      renderServe(); renderScores();
-    });
-
-    $("#team-form").addEventListener("submit", (e)=>{
-      e.preventDefault();
-      state.teamA = $("#teamAName").value || "Tim A";
-      state.teamB = $("#teamBName").value || "Tim B";
-      nameAEl.textContent = state.teamA;
-      nameBEl.textContent = state.teamB;
-    });
-
-    // Teknik tips
     const tips = {
-      "Servis Bawah": ["Sikap kuda-kuda ringan", "Tangan memegang bola rileks", "Ayun lengan dari belakang ke depan", "Pukul bagian bawah bola"],
-      "Servis Atas": ["Toss bola setinggi kepala", "Tangan pemukul lurus", "Pukul dengan telapak kuat", "Arahkan ke area kosong"],
-      "Passing Bawah": ["Satukan lengan (platform)", "Badan agak menunduk", "Kaki dibuka selebar bahu", "Dorong dari lutut, bukan ayunan besar"],
-      "Passing Atas": ["Bentuk segitiga dengan jari", "Badan rileks, lutut lentur", "Sentuh bola dengan ujung jari", "Dorong bola ke atas halus"],
-      "Smash": ["Awalan langkah cepat", "Lompatan tinggi", "Pukulan pergelangan kuat", "Arahkan menukik"],
-      "Blocking": ["Lompatan di dekat net", "Tangan rapat di atas net", "Baca arah smash lawan", "Jatuh mendarat seimbang"]
+      "Servis Bawah": ["Sikap kuda-kuda ringan", "Toss kecil", "Ayun lengan dari belakang ke depan"],
+      "Servis Atas": ["Toss setinggi kepala", "Lengan ayun penuh", "Arahkan ke area kosong"],
+      "Passing Bawah": ["Satukan lengan (platform)", "Badan agak menunduk", "Dorong dari lutut"],
+      "Passing Atas": ["Bentuk segitiga jari", "Sentuh dengan ujung jari", "Dorong lembut"],
+      "Smash": ["Awalan cepat", "Lompatan tinggi", "Pukulan pergelangan kuat"],
+      "Blocking": ["Tutup ruang di atas net", "Tangan rapat", "Mendarat seimbang"]
     };
     $$(".tech-btn").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
+      btn.addEventListener("click", async ()=>{
         const t = btn.dataset.tech;
-        const list = tips[t] || [];
-        const box = $("#techTips");
-        box.innerHTML = "<div class='font-semibold mb-1'>"+t+"</div>" + "<ul class='list-disc pl-5 space-y-1'>" + list.map(s=>"<li>"+s+"</li>").join("") + "</ul>";
-        box.classList.remove("fade-in"); void box.offsetWidth; box.classList.add("fade-in");
+        clearTimers();
+        if(t==="Servis Bawah"){ tip(t, tips[t]); await servisBawah(); }
+        else if(t==="Servis Atas"){ tip(t, tips[t]); await servisAtas(); }
+        else if(t==="Passing Bawah"){ tip(t, tips[t]); await passingBawah(); }
+        else if(t==="Passing Atas"){ tip(t, tips[t]); await passingAtas(); }
+        else if(t==="Smash"){ tip(t, tips[t]); await smash(); }
+        else if(t==="Blocking"){ tip(t, tips[t]); await blocking(); }
       });
     });
 
-    // QUIZ
-    const keys = { q1:'S', q2:'S', q3:'S', q4:'S', q5:'S', q6:'S' };
-    $("#quizForm").addEventListener("submit", (e)=>{
+    // VOLI scoreboard
+    const nameAEl=$("#nameA"), nameBEl=$("#nameB"), scoreAEl=$("#scoreA"), scoreBEl=$("#scoreB"), serveAEl=$("#serveA"), serveBEl=$("#serveB"), setsEl=$("#sets"), currentSetEl=$("#currentSet"), matchStatus=$("#matchStatus");
+    if(nameAEl){
+      let state={ teamA:"Garuda", teamB:"Rajawali", scoreA:0, scoreB:0, sets:[], currentSet:1, serve:"A", history:[] };
+      function renderServe(){ serveAEl.classList.toggle("hidden",state.serve!=="A"); serveBEl.classList.toggle("hidden",state.serve!=="B"); }
+      function renderScores(){
+        scoreAEl.textContent=state.scoreA; scoreBEl.textContent=state.scoreB; currentSetEl.textContent=state.currentSet;
+        setsEl.innerHTML="";
+        for(let i=0;i<5;i++){
+          const data=state.sets[i]||null;
+          const box=document.createElement("div");
+          box.className="rounded-lg px-3 py-2 border text-center "+(i===state.currentSet-1?"bg-white/20 border-white/40":"bg-white/10 border-white/15");
+          const t=document.createElement("div"); t.className="text-xs text-white/70"; t.textContent="Set "+(i+1);
+          const s=document.createElement("div"); s.className="font-semibold"; s.textContent=data?(data.a+" : "+data.b):"-";
+          box.appendChild(t); box.appendChild(s); setsEl.appendChild(box);
+        }
+      }
+      function resetSetScores(){ state.scoreA=0; state.scoreB=0; state.history=[]; renderScores(); }
+      function setTargetPoints(){ return state.currentSet===5?15:25; }
+      function checkSetEnd(){
+        const target=setTargetPoints(), a=state.scoreA, b=state.scoreB, diff=Math.abs(a-b);
+        if((a>=target||b>=target)&&diff>=2){
+          state.sets[state.currentSet-1]={a,b};
+          const win=a>b?"A":"B";
+          matchStatus.textContent="Set "+state.currentSet+" dimenangkan oleh Tim "+(win==="A"?state.teamA:state.teamB)+" ✅";
+          matchStatus.className="mt-3 text-center text-sm text-emerald-200";
+          const winsA=state.sets.filter(s=>s&&s.a>s.b).length, winsB=state.sets.filter(s=>s&&s.b>s.a).length;
+          if(winsA===3||winsB===3||state.currentSet===5){
+            const champ=winsA>winsB?state.teamA:state.teamB;
+            matchStatus.textContent="Pertandingan selesai! Pemenang: "+champ+" 🏆";
+            matchStatus.className="mt-3 text-center text-sm text-amber-200";
+          }else{
+            state.currentSet+=1; resetSetScores(); state.serve=(state.currentSet%2===1)?"A":"B"; renderServe(); renderScores();
+          }
+          renderScores(); return true;
+        }
+        return false;
+      }
+      function addPoint(who){
+        if(state.sets[state.currentSet-1]) return;
+        if(who==="A") state.scoreA++; else state.scoreB++;
+        state.history.push({who}); state.serve=who; renderServe(); renderScores(); checkSetEnd();
+      }
+      function undoPoint(){
+        const last=state.history.pop(); if(!last) return;
+        if(last.who==="A"&&state.scoreA>0) state.scoreA--; if(last.who==="B"&&state.scoreB>0) state.scoreB--;
+        const prev=state.history[state.history.length-1]; state.serve=prev?prev.who:state.serve; renderServe(); renderScores(); matchStatus.textContent="";
+      }
+      $("#addA").addEventListener("click",()=>addPoint("A"));
+      $("#addB").addEventListener("click",()=>addPoint("B"));
+      $("#undoPoint").addEventListener("click",undoPoint);
+      $("#resetSet").addEventListener("click",()=>{ resetSetScores(); matchStatus.textContent="Set direset."; matchStatus.className="mt-3 text-center text-sm text-white/80"; });
+      $("#resetMatch").addEventListener("click",()=>{ state={...state, scoreA:0, scoreB:0, sets:[], currentSet:1, history:[], serve:"A"}; matchStatus.textContent="Pertandingan direset."; matchStatus.className="mt-3 text-center text-sm text-white/80"; renderServe(); renderScores(); });
+      $("#team-form").addEventListener("submit",(e)=>{ e.preventDefault(); state.teamA=$("#teamAName").value||"Tim A"; state.teamB=$("#teamBName").value||"Tim B"; $("#nameA").textContent=state.teamA; $("#nameB").textContent=state.teamB; });
+      renderServe(); renderScores();
+    }
+
+    // Kuis
+    const keys={
+      q1:'S',q2:'S',q3:'S',q4:'S',q5:'S',q6:'S',
+      q7:'S',q8:'S',q9:'S',q10:'S',q11:'S',q12:'S',
+      q13:'S',q14:'S',q15:'S',q16:'S',q17:'S',q18:'S',
+      q19:'S',q20:'S'
+    };
+    $("#quizForm").addEventListener("submit",(e)=>{
       e.preventDefault();
-      let correct = 0, total = Object.keys(keys).length;
+      let c=0,t=Object.keys(keys).length;
       Object.keys(keys).forEach(k=>{
-        const chosen = document.querySelector('input[name="'+k+'"]:checked');
-        if (chosen && chosen.value===keys[k]) correct++;
+        const ch=document.querySelector('input[name="'+k+'"]:checked');
+        if(ch&&ch.value===keys[k]) c++;
       });
-      const res = $("#quizResult");
-      res.textContent = "Skor kamu: "+correct+" dari "+total+(correct===total?" • Hebat! 🎉":" • Yuk coba lagi!");
-      res.className = "text-sm " + (correct===total?"text-emerald-200":"text-white/90");
+      const res=$("#quizResult");
+      res.textContent="Skor kamu: "+c+" dari "+t+(c===t?" • Hebat! 🎉":" • Yuk coba lagi!");
+      res.className="text-sm "+(c===t?"text-emerald-200":"text-white/90");
     });
-    $("#resetQuiz").addEventListener("click", ()=>{
-      $$("#quizForm input[type=radio]").forEach(i=>i.checked=false);
-      const res = $("#quizResult");
-      res.textContent = "Kuis direset.";
-      res.className = "text-sm text-white/80";
-    });
-
-    // Initial renders
-    renderServe();
-    renderScores();
+    $("#resetQuiz").addEventListener("click",()=>{ $$("#quizForm input[type=radio]").forEach(i=>i.checked=false); const res=$("#quizResult"); res.textContent="Kuis direset."; res.className="text-sm text-white/80"; });
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9821d438a3849c38',t:'MTc1ODM3NjYxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982685609235ce85',t:'MTc1ODQyNTgxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
